@@ -24,7 +24,7 @@ const ItemCard = ({ item = {} }) => {
       }
 
       try {
-        const response = await axios("https://capitall-5.onrender.com/api/items");
+        const response = await axios.get("https://capitall-5.onrender.com/api/items");
         console.log(response.data);
 
         // Find the item with the matching user ID
