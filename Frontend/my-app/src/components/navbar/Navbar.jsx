@@ -13,8 +13,8 @@ const Navbar = () => {
             <Link as={RouterLink} to="/" color="white">Home</Link>
             
             <Link as={RouterLink} to="/sell" color="white">Sell Item</Link>
-            <Link as={RouterLink} to="/unsold-items" color="white">Unsold Items</Link>
-            <Link as={RouterLink} to="/my-items" color="white">My Items</Link>
+            <Link as={RouterLink} to="/unsold" color="white">Unsold Items</Link>
+            <Link as={RouterLink} to="/myitems" color="white">My Items</Link>
             <Link as={RouterLink} to="/login" color="white">Login</Link>
             <Link as={RouterLink} to="/register" color="white">Register</Link>
           </HStack>

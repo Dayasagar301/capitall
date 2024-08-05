@@ -1,3 +1,4 @@
+// middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const User = require('../models/User');
@@ -18,7 +19,12 @@ module.exports = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, config.jwtSecret);
-    req.user = decoded.user;
+    const user = await User.findById(decoded.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    req.user = user;
     next();
   } catch (err) {
     res.status(401).json({ msg: 'Token is not valid' });

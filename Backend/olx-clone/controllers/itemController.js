@@ -3,29 +3,35 @@ const User = require("../models/User");
 const path = require("path");
 const fs = require("fs");
 const config = require("../config/config");
+// controllers/itemController.js
 
 exports.createItem = async (req, res) => {
   const { name, price, status, description } = req.body;
-  const user = req.user.id;
-  const image = req.file ? req.file.filename : null; // Store filename instead of path
+  const userId = req.user.id;
+  const image = req.file ? `uploads/${req.file.filename}` : null;
 
   try {
-    const newItem = new Item({ name, price, status, description, user, image });
+    const user = await User.findById(userId); // Fetch user details
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    const newItem = new Item({ name, price, status, description, user: userId, image, username: user.username });
     await newItem.save();
 
-    await User.findByIdAndUpdate(user, { $push: { items: newItem._id } });
+    await User.findByIdAndUpdate(userId, { $push: { items: newItem._id } });
 
     res.status(201).json(newItem);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).send('Server error');
   }
 };
 
-// Get all unsold items
+
+// Get all unsold items with populated user details
 exports.getAllItems = async (req, res) => {
   try {
-    const items = await Item.find({ status: "unsold" });
+    const items = await Item.find({ status: "unsold" }).populate('user', 'username'); // Populate user with username
     res.status(200).json(items);
   } catch (err) {
     console.error(err.message);
@@ -33,10 +39,10 @@ exports.getAllItems = async (req, res) => {
   }
 };
 
-// Get items for a specific user
+// Get items for a specific user with populated user details
 exports.getUserItems = async (req, res) => {
   try {
-    const items = await Item.find({ user: req.user.id });
+    const items = await Item.find({ user: req.user.id }).populate('user', 'username'); // Populate user with username
     res.status(200).json(items);
   } catch (err) {
     console.error(err.message);
@@ -59,7 +65,7 @@ exports.getUserPurchases = async (req, res) => {
 exports.updateItem = async (req, res) => {
   const { id } = req.params;
   const { name, price, status, description } = req.body;
-  const image = req.file ? req.file.path : null;
+  const image = req.file ? `uploads/${req.file.filename}` : null; // Prepend 'uploads/' to the filename
 
   try {
     const item = await Item.findById(id);
@@ -97,9 +103,12 @@ exports.deleteItem = async (req, res) => {
     }
 
     if (item.user.toString() !== userId) {
-      return res
-        .status(401)
-        .json({ msg: "Not authorized to delete this item" });
+      return res.status(401).json({ msg: "Not authorized to delete this item" });
+    }
+
+    // Optionally, delete the associated image from the server
+    if (item.image) {
+      fs.unlinkSync(path.join(config.multerDest, item.image)); // Ensure the path is correct
     }
 
     await Item.findByIdAndDelete(itemId);
@@ -107,5 +116,34 @@ exports.deleteItem = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
+  }
+};
+
+// Purchase an item
+exports.purchaseItem = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const item = await Item.findById(id).populate('user', 'username'); // Populate user with username
+    if (!item) {
+      return res.status(404).json({ msg: 'Item not found' });
+    }
+
+    if (item.status === 'sold') {
+      return res.status(400).json({ msg: 'Item already sold' });
+    }
+
+    item.status = 'sold';
+    item.purchasedBy = userId;
+    await item.save();
+
+    // Add the item to the user's purchased items
+    await User.findByIdAndUpdate(userId, { $push: { purchases: item._id } });
+
+    res.status(200).json(item);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
   }
 };

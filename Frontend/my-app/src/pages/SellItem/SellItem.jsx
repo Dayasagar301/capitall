@@ -27,12 +27,14 @@ const SellItem = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'image') {
+      console.log(files[0])
       setFormData({ ...formData, image: files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
     }
+   
   };
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -41,7 +43,7 @@ const SellItem = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/items', {
+      const response = await fetch('https://capitall-5.onrender.com/api/items', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${user.token}`, // Add the authorization header
@@ -58,7 +60,7 @@ const SellItem = () => {
           duration: 5000,
           isClosable: true,
         });
-        navigate('/my-items');
+        navigate('/');
       } else {
         toast({
           title: "Error",

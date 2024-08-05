@@ -1,17 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Image, Text, VStack, Badge } from '@chakra-ui/react';
+import axios from 'axios';
 
 const ItemCard = ({ item = {} }) => {
   const {
-    image = 'https://via.placeholder.com/300', // Use a placeholder for default
+    image = 'https://via.placeholder.com/300',
     description = 'No description available',
-    user = 'Unknown user',
+    user = {},
     name = 'Unnamed item',
     status = 'unsold'
   } = item;
 
+  const [username, setUsername] = useState('');
   const badgeColor = status === 'sold' ? 'green' : 'red';
   const badgeText = status === 'sold' ? 'Sold' : 'Available';
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!user._id) {
+        console.warn('Invalid user ID:', user._id);
+        return;
+      }
+
+      try {
+        const response = await axios("http://localhost:5000/api/items");
+      
+        console.log(response.data);
+
+        // Find the item with the matching user ID
+        const matchedItem = response.data.find(item => item.user._id === user._id);
+        
+        if (matchedItem) {
+          setUsername(matchedItem.user.username);
+        } else {
+          setUsername('Unknown user');
+        }
+
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        setUsername('Unknown user');
+      }
+    };
+
+    fetchUser();
+  }, [user._id]);
 
   return (
     <Box
@@ -35,10 +67,11 @@ const ItemCard = ({ item = {} }) => {
         maxH="150px"
         fallbackSrc="https://via.placeholder.com/300"
       />
+      
       <VStack align="start" spacing={2} mt={4}>
         <Text fontWeight="bold" fontSize="lg">{name}</Text>
         <Text color="gray.600">{description}</Text>
-        <Text color="gray.500">User: {user}</Text>
+        <Text color="gray.500">User: {username}</Text>
         <Badge colorScheme={badgeColor}>{badgeText}</Badge>
       </VStack>
     </Box>

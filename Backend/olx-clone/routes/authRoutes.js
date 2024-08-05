@@ -12,4 +12,6 @@ router.post('/login', login);
 // Logout user
 router.post('/logout', authMiddleware, logout);
 
+  
+
 module.exports = router;

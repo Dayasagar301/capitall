@@ -1,3 +1,4 @@
+// src/pages/Home/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import ItemCard from '../../components/card/ItemCard';
 import { Box, Spinner, SimpleGrid } from '@chakra-ui/react';
@@ -8,7 +9,7 @@ const HomePage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/items')
+    fetch('https://capitall-5.onrender.com/api/items')
       .then(response => response.json())
       .then(data => {
         setItems(data);
@@ -31,7 +32,6 @@ const HomePage = () => {
   if (error) {
     return <Box color="red.500" textAlign="center">Error fetching items: {error.message}</Box>;
   }
-
   return (
     <Box p={4}>
       {items.length > 0 ? (
