@@ -9,7 +9,7 @@ const HomePage = () => {
 
   useEffect(() => {
     // Replace this URL with your actual API endpoint
-    fetch('http://localhost:5000/api/items')
+    fetch('https://capitall-5.onrender.com/api/items')
       .then(response => response.json())
       .then(data => {
         setItems(data);
