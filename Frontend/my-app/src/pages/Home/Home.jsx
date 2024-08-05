@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ItemCard from '../../components/card/ItemCard';
-import { Box, Spinner } from '@chakra-ui/react';
+import { Box, Spinner, SimpleGrid } from '@chakra-ui/react';
 
 const HomePage = () => {
   const [items, setItems] = useState([]);
@@ -8,8 +8,7 @@ const HomePage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Replace this URL with your actual API endpoint
-    fetch('https://capitall-5.onrender.com/api/items')
+    fetch('http://localhost:5000/api/items')
       .then(response => response.json())
       .then(data => {
         setItems(data);
@@ -34,18 +33,20 @@ const HomePage = () => {
   }
 
   return (
-    <div>
+    <Box p={4}>
       {items.length > 0 ? (
-        items.map(item => (
-          <ItemCard
-            key={item.id} // Ensure `item.id` is unique
-            item={item}
-          />
-        ))
+        <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={4}>
+          {items.map(item => (
+            <ItemCard
+              key={item._id} // Ensure `item.id` is unique
+              item={item}
+            />
+          ))}
+        </SimpleGrid>
       ) : (
         <Box textAlign="center" mt={4}>No items available</Box>
       )}
-    </div>
+    </Box>
   );
 };
 

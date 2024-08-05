@@ -5,9 +5,9 @@ const ItemCard = ({ item = {} }) => {
   const {
     image = 'https://via.placeholder.com/300', // Use a placeholder for default
     description = 'No description available',
-    user = 'Unknown user', // Changed to 'user' for consistency
-    name = 'Unnamed item', // Changed to 'name' for consistency
-    status = 'unsold' // Changed to 'status' for consistency
+    user = 'Unknown user',
+    name = 'Unnamed item',
+    status = 'unsold'
   } = item;
 
   const badgeColor = status === 'sold' ? 'green' : 'red';
@@ -21,14 +21,19 @@ const ItemCard = ({ item = {} }) => {
       boxShadow="lg"
       p={4}
       bg="white"
-      maxW={{ base: '100%', md: '300px' }}
+      maxW="300px"
+      minH="350px"
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-between"
     >
       <Image
-        src={`http://localhost:5000/uploads/${image}`} // Ensure URL is correct
+        src={image.startsWith('http') ? image : `http://localhost:5000/${image}`}
         alt={name}
         boxSize="100%"
         objectFit="cover"
-        fallbackSrc="https://via.placeholder.com/300" // Ensure fallback URL is valid
+        maxH="150px"
+        fallbackSrc="https://via.placeholder.com/300"
       />
       <VStack align="start" spacing={2} mt={4}>
         <Text fontWeight="bold" fontSize="lg">{name}</Text>

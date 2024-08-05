@@ -1,14 +1,13 @@
 const express = require("express");
-const connectDB = require("./config/db"); // Import the database connection
+const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const itemRoutes = require("./routes/itemRoutes");
 const cors = require("cors");
-const path = require("path"); // Import path module
+const path = require("path");
 const app = express();
 
 // Use CORS
-app.use(cors())
-
+app.use(cors());
 
 // Connect to MongoDB
 connectDB();
