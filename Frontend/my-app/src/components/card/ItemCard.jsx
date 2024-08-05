@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Image, Text, VStack, Badge } from '@chakra-ui/react';
+import { Box, Image, Text, VStack, Badge, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
 
 const ItemCard = ({ item = {} }) => {
@@ -12,6 +12,7 @@ const ItemCard = ({ item = {} }) => {
   } = item;
 
   const [username, setUsername] = useState('');
+  const [imageLoaded, setImageLoaded] = useState(false);
   const badgeColor = status === 'sold' ? 'green' : 'red';
   const badgeText = status === 'sold' ? 'Sold' : 'Available';
 
@@ -23,8 +24,7 @@ const ItemCard = ({ item = {} }) => {
       }
 
       try {
-        const response = await axios("http://localhost:5000/api/items");
-      
+        const response = await axios("https://capitall-5.onrender.com/api/items");
         console.log(response.data);
 
         // Find the item with the matching user ID
@@ -59,13 +59,22 @@ const ItemCard = ({ item = {} }) => {
       flexDirection="column"
       justifyContent="space-between"
     >
+      {!imageLoaded && (
+        <Box display="flex" justifyContent="center" alignItems="center" minH="150px">
+          <Spinner size="xl" />
+          <Text ml={4}>Loading image...</Text>
+        </Box>
+      )}
       <Image
-        src={image.startsWith('http') ? image : `http://localhost:5000/${image}`}
+        src={image.startsWith('http') ? image : `https://capitall-5.onrender.com/${image}`}
         alt={name}
         boxSize="100%"
         objectFit="cover"
         maxH="150px"
         fallbackSrc="https://via.placeholder.com/300"
+        onLoad={() => setImageLoaded(true)}
+        onError={() => setImageLoaded(true)} // Set imageLoaded to true on error to hide spinner
+        display={imageLoaded ? 'block' : 'none'}
       />
       
       <VStack align="start" spacing={2} mt={4}>
@@ -77,5 +86,5 @@ const ItemCard = ({ item = {} }) => {
     </Box>
   );
 };
-
+// 
 export default ItemCard;

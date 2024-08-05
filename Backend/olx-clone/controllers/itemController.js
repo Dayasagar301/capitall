@@ -1,14 +1,15 @@
-const Item = require("../models/Item");
-const User = require("../models/User");
-const path = require("path");
-const fs = require("fs");
-const config = require("../config/config");
-// controllers/itemController.js
+const Item = require('../models/Item');
+const User = require('../models/User');
+const path = require('path');
+const fs = require('fs');
+const config = require('../config/config');
 
 exports.createItem = async (req, res) => {
+  console.log('File received:', req.file); // Debug log
+
   const { name, price, status, description } = req.body;
   const userId = req.user.id;
-  const image = req.file ? `uploads/${req.file.filename}` : null;
+  const image = req.file ? `uploads/${req.file.filename}` : null; // Make sure this path matches the static serving path
 
   try {
     const user = await User.findById(userId); // Fetch user details
@@ -27,37 +28,36 @@ exports.createItem = async (req, res) => {
   }
 };
 
-
 // Get all unsold items with populated user details
 exports.getAllItems = async (req, res) => {
   try {
-    const items = await Item.find({ status: "unsold" }).populate('user', 'username'); // Populate user with username
+    const items = await Item.find({ status: 'unsold' }).populate('user', 'username');
     res.status(200).json(items);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).send('Server error');
   }
 };
 
 // Get items for a specific user with populated user details
 exports.getUserItems = async (req, res) => {
   try {
-    const items = await Item.find({ user: req.user.id }).populate('user', 'username'); // Populate user with username
+    const items = await Item.find({ user: req.user.id }).populate('user', 'username');
     res.status(200).json(items);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).send('Server error');
   }
 };
 
 // Get all purchases of a user
 exports.getUserPurchases = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).populate("purchases");
+    const user = await User.findById(req.user.id).populate('purchases');
     res.status(200).json(user.purchases);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).send('Server error');
   }
 };
 
@@ -70,11 +70,11 @@ exports.updateItem = async (req, res) => {
   try {
     const item = await Item.findById(id);
     if (!item) {
-      return res.status(404).json({ msg: "Item not found" });
+      return res.status(404).json({ msg: 'Item not found' });
     }
 
     if (item.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: "Not authorized" });
+      return res.status(401).json({ msg: 'Not authorized' });
     }
 
     item.name = name || item.name;
@@ -87,7 +87,7 @@ exports.updateItem = async (req, res) => {
     res.status(200).json(item);
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).send('Server error');
   }
 };
 
@@ -99,11 +99,11 @@ exports.deleteItem = async (req, res) => {
 
     const item = await Item.findById(itemId);
     if (!item) {
-      return res.status(404).json({ msg: "Item not found" });
+      return res.status(404).json({ msg: 'Item not found' });
     }
 
     if (item.user.toString() !== userId) {
-      return res.status(401).json({ msg: "Not authorized to delete this item" });
+      return res.status(401).json({ msg: 'Not authorized to delete this item' });
     }
 
     // Optionally, delete the associated image from the server
@@ -112,10 +112,10 @@ exports.deleteItem = async (req, res) => {
     }
 
     await Item.findByIdAndDelete(itemId);
-    res.status(200).json({ msg: "Item deleted successfully" });
+    res.status(200).json({ msg: 'Item deleted successfully' });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server error");
+    res.status(500).send('Server error');
   }
 };
 
@@ -125,7 +125,7 @@ exports.purchaseItem = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const item = await Item.findById(id).populate('user', 'username'); // Populate user with username
+    const item = await Item.findById(id).populate('user', 'username');
     if (!item) {
       return res.status(404).json({ msg: 'Item not found' });
     }
