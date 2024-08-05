@@ -7,11 +7,8 @@ const path = require("path"); // Import path module
 const app = express();
 
 // Use CORS
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Replace with your frontend URL
-  })
-);
+app.use(cors())
+
 
 // Connect to MongoDB
 connectDB();
