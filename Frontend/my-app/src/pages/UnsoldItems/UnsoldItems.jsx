@@ -8,7 +8,7 @@ const UnsoldItems = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/items?status=unsold')
+    fetch('https://capitall-5.onrender.com/api/items?status=unsold')
       .then(response => response.json())
       .then(data => {
         setItems(data);

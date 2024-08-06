@@ -19,7 +19,7 @@ const MyItems = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/items/myitems', {
+        const response = await fetch('https://capitall-5.onrender.com/api/items/myitems', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -51,7 +51,7 @@ const MyItems = () => {
 
   const handleDelete = async (itemId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/items/${itemId}`, {
+      const response = await fetch(`https://capitall-5.onrender.com/api/items/${itemId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${JSON.parse(localStorage.getItem('token'))}`

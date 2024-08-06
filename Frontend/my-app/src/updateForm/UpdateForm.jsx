@@ -19,7 +19,7 @@ const UpdateForm = () => {
             try {
               const token = JSON.parse(localStorage.getItem('token'));
               console.log('Retrieved Token:', token); // Log the token
-              const response = await fetch(`http://localhost:5000/api/items/${itemId}`, {
+              const response = await fetch(`https://capitall-5.onrender.com/api/items/${itemId}`, {
                 headers: {
                   'Authorization': `Bearer ${token}`
                 }
@@ -61,7 +61,7 @@ const UpdateForm = () => {
       if (!token) {
         throw new Error('No authentication token found.');
       }
-      const response = await fetch(`http://localhost:5000/api/items/${itemId || ''}`, {
+      const response = await fetch(`https://capitall-5.onrender.com/api/items/${itemId || ''}`, {
         method: itemId ? 'PATCH' : 'POST',
         headers: {
           'Content-Type': 'application/json',
