@@ -92,6 +92,7 @@ exports.updateItem = async (req, res) => {
 };
 
 // Delete an item
+
 exports.deleteItem = async (req, res) => {
   try {
     const itemId = req.params.id;
@@ -108,7 +109,13 @@ exports.deleteItem = async (req, res) => {
 
     // Optionally, delete the associated image from the server
     if (item.image) {
-      fs.unlinkSync(path.join(config.multerDest, item.image)); // Ensure the path is correct
+      const imagePath = path.join(config.multerDest, item.image);
+      console.log(`Attempting to delete image at path: ${imagePath}`);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      } else {
+        console.warn(`Image file not found: ${imagePath}`);
+      }
     }
 
     await Item.findByIdAndDelete(itemId);
@@ -145,5 +152,16 @@ exports.purchaseItem = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
+  }
+};
+exports.getItemById = async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id);
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+    res.status(200).json(item);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
   }
 };

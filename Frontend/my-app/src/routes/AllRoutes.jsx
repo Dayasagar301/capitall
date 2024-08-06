@@ -7,6 +7,7 @@ import Register from '../pages/Register/Register';
 import SellItem from '../pages/SellItem/SellItem';
 import UnsoldItems from '../pages/UnsoldItems/UnsoldItems';
 import MyItems from '../pages/MyItems/MyItems';
+import UpdateForm from '../updateForm/UpdateForm';
 
 const AllRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AllRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/sell" element={<SellItem />} />
+      <Route path="/updateform/:itemId" element={<UpdateForm />} />
       <Route path="/unsold" element={<UnsoldItems />} />
       <Route path="/myitems" element={<MyItems />} />
     </Routes>

@@ -1,5 +1,5 @@
 const express = require('express');
-const { createItem, getAllItems, getUserItems, deleteItem, updateItem, purchaseItem } = require('../controllers/itemController');
+const { createItem, getAllItems, getUserItems, deleteItem, updateItem, purchaseItem, getItemById } = require('../controllers/itemController');
 const auth = require('../middleware/auth');
 const multer = require('multer');
 const path = require('path');
@@ -36,5 +36,6 @@ router.get('/myitems', auth, getUserItems);
 router.delete('/:id', auth, deleteItem);
 router.patch('/:id', auth, upload.single('image'), updateItem);
 router.post('/purchase/:id', auth, purchaseItem);
+router.get('/:id', auth, getItemById);
 
 module.exports = router;
