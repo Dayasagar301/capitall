@@ -1,11 +1,14 @@
+// src/pages/UnsoldItems/UnsoldItems.js
 import React, { useState, useEffect } from 'react';
 import ItemCard from '../../components/card/ItemCard';
 import { Box, Button, Spinner, SimpleGrid, Flex } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const UnsoldItems = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize navigate
 
   useEffect(() => {
     fetch('https://capitall-5.onrender.com/api/items?status=unsold')
@@ -22,13 +25,10 @@ const UnsoldItems = () => {
 
   const handlePurchase = async (itemId) => {
     const token = JSON.parse(localStorage.getItem('token'));
-    console.log(token);
     if (!token) {
       alert('You must be logged in to purchase an item.');
       return;
     }
-
-    console.log('Token:', token);  // Debug: Check if token is being retrieved
 
     try {
       const response = await fetch(`https://capitall-5.onrender.com/api/items/purchase/${itemId}`, {
@@ -41,7 +41,7 @@ const UnsoldItems = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error response:', errorData);  // Debug: Log error response from server
+        console.error('Error response:', errorData);
         throw new Error(errorData.msg || 'Failed to purchase item');
       }
 
@@ -49,8 +49,12 @@ const UnsoldItems = () => {
 
       // Remove the purchased item from the list
       setItems(items.filter(item => item._id !== updatedItem._id));
+
+      // Redirect to /myitems
+      navigate('/myitems');
+
     } catch (error) {
-      console.error('Error:', error);  // Debug: Log error
+      console.error('Error:', error);
       setError(error);
     }
   };
