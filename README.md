@@ -116,3 +116,8 @@ olx-clone/
     │   └── index.js
     └── package.json
 ```
+![Screenshot (213)](https://github.com/user-attachments/assets/a7470013-f43a-4ab8-bb54-542396c30611)
+![Screenshot (210)](https://github.com/user-attachments/assets/dd6414a3-e23a-40eb-9169-010a68055810)
+![Screenshot (211)](https://github.com/user-attachments/assets/c7c67c16-e231-4471-ae9a-8024dec179f0)
+
+
